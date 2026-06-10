@@ -18,7 +18,15 @@ def run_queries(search_queries : List[str] , **kwargs):
 
 execute_tools = ToolNode(
     [
-        StructuredTool.from_function(run_queries , AnswerQuestion.__name__),
-        StructuredTool.from_function(run_queries , ReviseAnswer.__name__),
+        StructuredTool.from_function(
+            func=run_queries,
+            name="run_queries_initial",  # Give it a unique string name
+            args_schema=AnswerQuestion,  # Bind your Pydantic schema here
+        ),
+        StructuredTool.from_function(
+            func=run_queries,
+            name="run_queries_revision",  # Give it a unique string name
+            args_schema=ReviseAnswer,  # Bind your Pydantic schema here
+        ),
     ]
 )

@@ -38,7 +38,7 @@ Current time: {time}
 
 
 first_responder_prompt_template = actor_prompt_template.partial(first_instruction = "Provide a detailed 250 word answer to the question")
-first_responder = first_responder_prompt_template | llm.bind_tools(tools = [AnswerQuestion] , tool_choice="Answer Question")
+first_responder = first_responder_prompt_template | llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion")
 
 revise_instructions = """Revise your previous answer using the new information.
     - You should use the previous critique to add important information to your answer.
@@ -49,8 +49,7 @@ revise_instructions = """Revise your previous answer using the new information.
     - You should use the previous critique to remove superfluous information from your answer and make SURE it is not more than 250 words.
 """
 
-revisor = actor_prompt_template.partial(first_instruction = revise_instructions) | llm.bind_tools(tools = [ReviseAnswer] , tool_choice="Revise Answer")
-
+revisor = actor_prompt_template.partial(first_instruction = revise_instructions) | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer")
 
 if __name__ == "__main__":
     human_message = HumanMessage(
