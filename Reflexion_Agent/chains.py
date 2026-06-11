@@ -3,7 +3,7 @@ import datetime
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-from Reflexion_Agent.schemas import AnswerQuestion, ReviseAnswer
+from schemas import AnswerQuestion, ReviseAnswer
 
 load_dotenv()
 
@@ -14,7 +14,7 @@ from langchain_core.output_parsers.openai_tools import (
 from langchain_core.prompts import ChatPromptTemplate , MessagesPlaceholder
 from langchain_core.messages import HumanMessage
 
-llm = ChatGroq(model = "openai/gpt-oss-20b")
+llm = ChatGroq(model = "llama-3.3-70b-versatile")
 parser = JsonOutputToolsParser(return_id=True)
 pydantic_parser = PydanticToolsParser(tools = [AnswerQuestion])
 
@@ -47,7 +47,8 @@ revise_instructions = """Revise your previous answer using the new information.
             - [1] https://example.com
             - [2] https://example.com
     - You should use the previous critique to remove superfluous information from your answer and make SURE it is not more than 250 words.
-"""
+    
+CRITICAL: If the current answer is absolutely excellent, accurate, completely answers the user prompt, and requires no further research, set 'is_excellent' to True and leave 'search_queries' as an empty list []."""
 
 revisor = actor_prompt_template.partial(first_instruction = revise_instructions) | llm.bind_tools(tools=[ReviseAnswer], tool_choice="ReviseAnswer")
 

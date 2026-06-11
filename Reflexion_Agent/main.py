@@ -21,11 +21,22 @@ def event_loop(state : MessagesState) -> Literal[execute_tools , END]:
     count_tool_visits = sum(
         isinstance(item , ToolMessage) for item in state["messages"]
     )
-    num_iterations = count_tool_visits
 
-    if num_iterations >= 3:
+    if count_tool_visits >= 3:
+        print("Hard loop count reached")
         return END
+
+    last_message = state["messages"][-1]
+    if isinstance(last_message, AIMessage) and last_message.tool_calls:
+        tool_args = last_message.tool_calls[0].get("args" , {})
+
+        if tool_args.get("is_excellent") is True:
+            print("LLM marked the response as excellent. Terminating agent.")
+            return END
+
     return "execute_tools"
+
+
 
 
 builder = StateGraph(MessagesState)
